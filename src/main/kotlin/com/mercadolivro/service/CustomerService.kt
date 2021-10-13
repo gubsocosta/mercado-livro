@@ -40,5 +40,3 @@ class CustomerService {
         customerList.removeIf { it.id == id }
     }
 }
-
-docker run --name mysql -e MYSQL_ROOT_PASSWORD=secret -d mysql:5
