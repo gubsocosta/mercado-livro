@@ -45,4 +45,10 @@ class CustomerController {
                 it.email = customer.email
             }
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(@PathVariable id: String) {
+        customerList.removeIf { it.id == id }
+    }
 }
