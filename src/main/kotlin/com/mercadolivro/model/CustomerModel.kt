@@ -1,7 +1,7 @@
 package com.mercadolivro.model
 
-data class CustomerModel (
+data class CustomerModel(
     val id: String,
-    val name: String,
-    val email: String,
+    var name: String,
+    var email: String,
 )
