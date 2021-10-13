@@ -13,7 +13,10 @@ class CustomerController {
     val customerList = mutableListOf<CustomerModel>()
 
     @GetMapping
-    fun list(): List<CustomerModel> {
+    fun list(@RequestParam name: String?): List<CustomerModel> {
+        name?.let {
+            return customerList.filter { it.name.contains(name, true) }
+        }
         return customerList
     }
 
