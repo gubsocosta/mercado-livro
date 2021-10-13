@@ -2,56 +2,43 @@ package com.mercadolivro.controller
 
 import com.mercadolivro.controller.request.PostCustomerRequest
 import com.mercadolivro.controller.request.PutCustomerRequest
+import com.mercadolivro.extension.toCustomerModel
 import com.mercadolivro.model.CustomerModel
+import com.mercadolivro.service.CustomerService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("customers")
-class CustomerController {
-
-    val customerList = mutableListOf<CustomerModel>()
+class CustomerController(
+    val customerService: CustomerService
+) {
 
     @GetMapping
     fun list(@RequestParam name: String?): List<CustomerModel> {
-        name?.let {
-            return customerList.filter { it.name.contains(name, true) }
-        }
-        return customerList
+        return customerService.list(name)
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@RequestBody customer: PostCustomerRequest) {
-        val id = if (customerList.isEmpty()) {
-            "1"
-        } else {
-            customerList.last().id.toInt() + 1
-        }.toString()
-
-        customerList.add(CustomerModel(id, customer.name, customer.email))
+        customerService.create(customer.toCustomerModel())
     }
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: String): CustomerModel {
-        return customerList.filter { it.id == id }.first()
+        return customerService.findById(id)
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@PathVariable id: String, @RequestBody customer: PutCustomerRequest) {
-        customerList
-            .filter { it.id == id }
-            .first()
-            .let {
-                it.name = customer.name
-                it.email = customer.email
-            }
+        customerService.update(customer.toCustomerModel(id))
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable id: String) {
-        customerList.removeIf { it.id == id }
+        customerService.delete(id)
     }
 }
